@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  fullname String
+  document String
+  email String
+  responsibles_users Movement[] @relation("responsible_user")
+  destiny_users Movement[] @relation("destiny_user")
+  user_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  is_delete Boolean @default(false)
+}
+
+model Inventary{
+  id Int @id @default(autoincrement())
+  patrimonial_code String @default("S/C")
+  denomination String
+  lot String
+  brand String
+  model String
+  color String
+  dimensions String
+  serie String
+  others String
+  conservation_state String
+  user_id String
+  observations String
+  details_movements Details_movement[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  is_delete Boolean @default(false)
+}
+
+model Movement{
+  id Int @id @default(autoincrement())
+  register_code String
+  type String
+  reason String
+  auth_document String
+  unit_organic String
+  local String
+  address String
+  unit_organic_destiny String?
+  local_destiny String?
+  address_destiny String?
+  responsible_user User @relation("responsible_user", fields: [responsible_user_id], references: [id])
+  responsible_user_id Int
+  destiny_user User @relation("destiny_user", fields: [destiny_user_id], references: [id])
+  destiny_user_id Int
+  date DateTime
+  user_id String
+  details Details_movement[]
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  is_delete Boolean @default(false)
+}
+
+
+model Details_movement{
+  id Int @id @default(autoincrement())
+  movement Movement @relation(fields: [movement_id], references: [id])
+  movement_id Int
+  inventary Inventary @relation(fields: [inventary_id], references: [id])
+  inventary_id Int
+  user_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  is_delete Boolean @default(false)
+}
