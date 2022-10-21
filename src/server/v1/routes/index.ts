@@ -2,12 +2,211 @@ import { PrismaClient, Movement, Inventary, Details_movement,User } from '@prism
 import express, {Request, Response} from 'express';
 import { validateToken } from '../auth';
 import axios, { AxiosError } from 'axios';
+import fs, { createWriteStream } from 'fs';
+import fsSync from 'fs/promises';
+import {v4 as uuidv4} from 'uuid';
+import FormData from 'form-data';
+import * as stream from 'stream';
 
 const prisma = new PrismaClient()
 const router = express.Router();
 
 router.get('/', (req: Request, res: Response)=>{
     res.status(200).send("Inventary API")
+});
+
+router.get('/report', async (req: Request, res: Response)=>{
+    let type = req.query.type;
+    let id = req.query.id
+    let data
+    let aux: object[] = [];
+    let newData: object[] = []
+    let template = ""
+    switch(type){
+        case "in":
+            template = "ficha_entrada"
+            data = await prisma.movement.findMany({
+                include:{
+                    details: {
+                        include: {
+                            inventary: true
+                        }
+                    },
+                    responsible_user: true,
+                    destiny_user: true
+                },
+                where:{
+                    type: {
+                        contains: "I"
+                    },
+                    id:{
+                        equals: Number(id)
+                    }
+                }
+            })
+            data.map(x=>{
+                x.details.map(y=>{
+                    aux.push({
+                        "canceled": y.inventary.is_delete,
+                        "codePatrimonial": y.inventary.patrimonial_code,
+                        "color": y.inventary.color,
+                        "condition": y.inventary.conservation_state,
+                        "denomination": y.inventary.denomination,
+                        "dimention": y.inventary.dimensions,
+                        "id": y.inventary.id,
+                        "marca": y.inventary.brand,
+                        "model": y.inventary.model,
+                        "moveId": y.movement_id,
+                        "num_lote": y.inventary.lot,
+                        "observation": y.inventary.observations,
+                        "others": y.inventary.others,
+                        "series": y.inventary.serie
+                      })
+                })
+                newData.push({
+                    "adress": x.address,
+                    "adress_destino": x.address_destiny,
+                    "canceled": x.is_delete,
+                    "company": "company",
+                    "createDate": x.created_at,
+                    "date": x.date,
+                    "deleteDate": x.updated_at,
+                    "dependence": x.unit_organic,
+                    "dependence_id": "id_dependence",
+                    "details": aux,
+                    "dni": x.responsible_user.document,
+                    "dni_destino": x.destiny_user.document,
+                    "document_authorization": x.auth_document,
+                    "email": x.responsible_user.email,
+                    "email_destino": x.destiny_user.email,
+                    "fullName": x.responsible_user.fullname,
+                    "fullName_destino": x.destiny_user.fullname,
+                    "id": x.id,
+                    "local_destino": x.local,
+                    "proveedor_destino": x.local_destiny,
+                    "reason": x.reason,
+                    "reference": "reference",
+                    "register_code": x.register_code,
+                    "type": x.type,
+                    "uid": x.user_id
+                })
+            })
+            break;
+        case "out":
+            template = "ficha_salida"
+            data = await prisma.movement.findMany({
+                include:{
+                    details: {
+                        include: {
+                            inventary: true
+                        }
+                    },
+                    responsible_user: true,
+                    destiny_user: true
+                },
+                where:{
+                    type: {
+                        not: "I"
+                    },
+                    id:{
+                        equals: Number(id)
+                    }
+                }
+            })
+            data.map(x=>{
+                x.details.map(y=>{
+                    aux.push({
+                        "canceled": y.inventary.is_delete,
+                        "codePatrimonial": y.inventary.patrimonial_code,
+                        "color": y.inventary.color,
+                        "condition": y.inventary.conservation_state,
+                        "denomination": y.inventary.denomination,
+                        "dimention": y.inventary.dimensions,
+                        "id": y.inventary.id,
+                        "marca": y.inventary.brand,
+                        "model": y.inventary.model,
+                        "moveId": y.movement_id,
+                        "num_lote": y.inventary.lot,
+                        "observation": y.inventary.observations,
+                        "others": y.inventary.others,
+                        "series": y.inventary.serie
+                      })
+                })
+                newData.push({
+                    "adress": x.address,
+                    "adress_destino": x.address_destiny,
+                    "canceled": x.is_delete,
+                    "company": "company",
+                    "createDate": x.created_at,
+                    "date": x.date,
+                    "deleteDate": x.updated_at,
+                    "dependence": x.unit_organic,
+                    "dependence_id": "id_dependence",
+                    "details": aux,
+                    "dni": x.responsible_user.document,
+                    "dni_destino": x.destiny_user.document,
+                    "document_authorization": x.auth_document,
+                    "email": x.responsible_user.email,
+                    "email_destino": x.destiny_user.email,
+                    "fullName": x.responsible_user.fullname,
+                    "fullName_destino": x.destiny_user.fullname,
+                    "id": x.id,
+                    "local_destino": x.local,
+                    "proveedor_destino": x.local_destiny,
+                    "reason": x.reason,
+                    "reference": "reference",
+                    "register_code": x.register_code,
+                    "type": x.type,
+                    "uid": x.user_id
+                })
+            })
+            break;
+        case "inventary":
+            template = "ficha_bienes"
+            data = await prisma.inventary.findMany()
+            break;
+        default:
+            break;
+    }
+    let uniqueId= uuidv4()
+    fs.writeFile('./temp/json/'+uniqueId+'.json', JSON.stringify(newData), 'utf8', (err)=>{
+        if(err){
+            console.log("Error to create a .json file")
+        } else {
+            console.log("Success to create a .json file")
+        }
+    });
+    const file = await fsSync.readFile('./temp/json/'+uniqueId+'.json');
+    const form = new FormData();
+    form.append('template', template);
+    form.append('filename', uniqueId+".json")
+    form.append('extension', 'pdf')
+    form.append('file',file,uniqueId+".json")
+    let response
+    try {
+        response = await axios.post('http://web.regionancash.gob.pe/api/jreport/', form, {
+        headers: {
+            ...form.getHeaders(),
+        },
+        responseType: 'arraybuffer'
+    })
+        fs.writeFile('./temp/pdf/'+uniqueId+'.pdf', response.data, {encoding: null}, (err)=>{
+            if(err){
+                console.log("Error to create a .pdf file")
+            } else {
+                console.log("Success to create a .pdf file")
+                fs.unlinkSync('./temp/json/'+uniqueId+'.json')
+                let data =fs.readFileSync('./temp/pdf/'+uniqueId+".pdf");
+                res.contentType("application/pdf");
+                fs.unlinkSync('./temp/pdf/'+uniqueId+'.pdf')
+                res.send(data);
+            }
+        });
+    } catch (error) {
+        console.log(error)
+        response = null
+    }
+    
 });
 
 router.get('/inventary/:id', validateToken, async (req: Request, res: Response)=>{
