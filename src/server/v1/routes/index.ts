@@ -272,7 +272,47 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
         skip: start,
         take: end
     })
-    res.status(200).json(response);
+    let count = await prisma.movement.count({
+        where:{
+            type: type===""?{
+                not: "I"
+            }:{
+                contains: type
+            },
+            register_code: {
+                contains: register_code
+            },
+            responsible_user: {
+                fullname: {
+                    contains: responsible_user
+                }
+            },
+            destiny_user: {
+                fullname:{
+                    contains: destiny_user
+                }
+            },
+            unit_organic: {
+                contains: unit_organic
+            },
+            unit_organic_destiny:unit_organic_destiny!==""?{
+                contains: unit_organic_destiny
+            }:{},
+            local: {
+                contains: local
+            },
+            local_destiny: local_destiny!==""?{
+                contains: local_destiny
+            }:{},
+            date: date!==""?{equals: date}:{}
+        },
+        skip: start,
+        take: end
+    });
+    res.status(200).json({
+        data: response,
+        count: count
+    });
 });
 
 router.get('/dashboard', validateToken, async (req: Request, res: Response)=>{
@@ -347,7 +387,46 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
             }
         }
     })
-    res.status(200).json(response);
+    let count = await prisma.inventary.count({
+        skip: start,
+        take: end,
+        where:{
+            patrimonial_code:{
+                contains: patrimonial_code
+            },
+            denomination:{
+                contains: denomination
+            },
+            brand: {
+                contains: brand
+            },
+            model:{
+                contains: model
+            },
+            color: {
+                contains:color
+            },
+            serie: {
+                contains: serie
+            },
+            lot: {
+                contains: lot
+            },
+            others: {
+                contains: others
+            },
+            conservation_state: {
+                contains: conservation_state
+            },
+            observations: {
+                contains: observations
+            }
+        }
+    })
+    res.status(200).json({
+        data: response,
+        count: count
+    });
 });
 
 router.get('/user/:document', validateToken, async (req: Request, res: Response)=>{
