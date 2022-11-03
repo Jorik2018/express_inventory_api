@@ -10,19 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id Int @id @default(autoincrement())
-  fullname String
-  document String
-  email String
-  responsibles_users Movement[] @relation("responsible_user")
-  destiny_users Movement[] @relation("destiny_user")
-  user_id String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  is_delete Boolean @default(false)
-}
-
 model Inventary{
   id Int @id @default(autoincrement())
   patrimonial_code String @default("S/C")
@@ -55,10 +42,12 @@ model Movement{
   unit_organic_destiny String?
   local_destiny String?
   address_destiny String?
-  responsible_user User @relation("responsible_user", fields: [responsible_user_id], references: [id])
-  responsible_user_id Int
-  destiny_user User @relation("destiny_user", fields: [destiny_user_id], references: [id])
-  destiny_user_id Int
+  responsible_user_document String
+  responsible_user_name String
+  responsible_user_email String
+  destiny_user_document String
+  destiny_user_name String
+  destiny_user_email String
   date DateTime
   user_id String
   details Details_movement[]

@@ -1,4 +1,4 @@
-import { PrismaClient, Movement, Inventary, Details_movement,User } from '@prisma/client'
+import { PrismaClient, Movement, Inventary, Details_movement } from '@prisma/client'
 import express, {Request, Response} from 'express';
 import { validateToken } from '../auth';
 import axios, { AxiosError } from 'axios';
@@ -32,8 +32,6 @@ router.get('/report', async (req: Request, res: Response)=>{
                             inventary: true
                         }
                     },
-                    responsible_user: true,
-                    destiny_user: true
                 },
                 where:{
                     type: {
@@ -74,13 +72,13 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "dependence": x.unit_organic,
                     "dependence_id": "id_dependence",
                     "details": aux,
-                    "dni": x.responsible_user.document,
-                    "dni_destino": x.destiny_user.document,
+                    "dni": x.responsible_user_document,
+                    "dni_destino": x.destiny_user_document,
                     "document_authorization": x.auth_document,
-                    "email": x.responsible_user.email,
-                    "email_destino": x.destiny_user.email,
-                    "fullName": x.responsible_user.fullname,
-                    "fullName_destino": x.destiny_user.fullname,
+                    "email": x.responsible_user_email,
+                    "email_destino": x.destiny_user_email,
+                    "fullName": x.responsible_user_name,
+                    "fullName_destino": x.destiny_user_name,
                     "id": x.id,
                     "local_destino": x.local,
                     "proveedor_destino": x.local_destiny,
@@ -101,8 +99,6 @@ router.get('/report', async (req: Request, res: Response)=>{
                             inventary: true
                         }
                     },
-                    responsible_user: true,
-                    destiny_user: true
                 },
                 where:{
                     type: {
@@ -143,13 +139,13 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "dependence": x.unit_organic,
                     "dependence_id": "id_dependence",
                     "details": aux,
-                    "dni": x.responsible_user.document,
-                    "dni_destino": x.destiny_user.document,
+                    "dni": x.responsible_user_document,
+                    "dni_destino": x.destiny_user_document,
                     "document_authorization": x.auth_document,
-                    "email": x.responsible_user.email,
-                    "email_destino": x.destiny_user.email,
-                    "fullName": x.responsible_user.fullname,
-                    "fullName_destino": x.destiny_user.fullname,
+                    "email": x.responsible_user_email,
+                    "email_destino": x.destiny_user_email,
+                    "fullName": x.responsible_user_name,
+                    "fullName_destino": x.destiny_user_name,
                     "id": x.id,
                     "local_destino": x.local,
                     "proveedor_destino": x.local_destiny,
@@ -232,10 +228,6 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
     let local_destiny: string = req.query.local_destiny?req.query.local_destiny as string: "";
     let date: string | Date = req.query.date?req.query.date as string: "";
     let response = await prisma.movement.findMany({
-        include: {
-            destiny_user: true,
-            responsible_user: true,
-        },
         where:{
             type: type===""?{
                 not: "I"
@@ -245,15 +237,11 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
             register_code: {
                 contains: register_code
             },
-            responsible_user: {
-                fullname: {
-                    contains: responsible_user
-                }
+            responsible_user_name:{
+                contains: responsible_user
             },
-            destiny_user: {
-                fullname:{
-                    contains: destiny_user
-                }
+            destiny_user_name:{
+                contains: destiny_user
             },
             unit_organic: {
                 contains: unit_organic
@@ -282,15 +270,11 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
             register_code: {
                 contains: register_code
             },
-            responsible_user: {
-                fullname: {
-                    contains: responsible_user
-                }
+            responsible_user_name:{
+                contains: responsible_user
             },
-            destiny_user: {
-                fullname:{
-                    contains: destiny_user
-                }
+            destiny_user_name: {
+                contains: destiny_user
             },
             unit_organic: {
                 contains: unit_organic
@@ -429,26 +413,10 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
     });
 });
 
-router.get('/user/:document', validateToken, async (req: Request, res: Response)=>{
-    let document: string = req.params.document;
-    let response = await prisma.user.findFirst({
-        where: {
-            document: document
-        }
-    })
-    if(response===null){
-        res.status(400).send();
-    } else {
-        res.status(200).json(response);
-    }
-});
-
 router.get('/movement/:id', validateToken, async (req: Request, res: Response)=>{
     let id: number = Number(req.params.id);
     let response = await prisma.movement.findUnique({
         include: {
-            destiny_user: true,
-            responsible_user: true,
             details: {
                 include:{
                     inventary: true
@@ -494,19 +462,15 @@ router.post('/movement', validateToken, async (req: Request, res: Response)=>{
             address_destiny: data.address_destiny,
             auth_document: data.auth_document,
             date: data.date,
-            destiny_user: {
-                connect:{
-                    id: data.destiny_user_id
-                }
-            },
+            destiny_user_email: data.destiny_user_name,
+            destiny_user_name: data.destiny_user_name,
+            destiny_user_document: data.destiny_user_document,
             local: data.local,
             local_destiny: data.local_destiny,
             reason: data.reason,
-            responsible_user: {
-                connect:{
-                    id: data.responsible_user_id
-                }
-            },
+            responsible_user_email: data.destiny_user_name,
+            responsible_user_name: data.destiny_user_name,
+            responsible_user_document: data.responsible_user_document,
             register_code: data.register_code,
             type: data.type,
             unit_organic: data.unit_organic,
@@ -514,15 +478,6 @@ router.post('/movement', validateToken, async (req: Request, res: Response)=>{
             user_id: data.user_id,
         }
     }); 
-    res.status(200).send(response)
-});
-
-router.post('/user', validateToken, async (req: Request, res: Response)=>{
-    let data: User = req.body;
-    data.user_id = req.body.user_id
-    let response = await prisma.user.create({
-        data: data
-    })
     res.status(200).send(response)
 });
 
