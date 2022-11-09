@@ -16,6 +16,7 @@ router.get('/', (req: Request, res: Response)=>{
 });
 
 router.get('/report', async (req: Request, res: Response)=>{
+    try {
     let type = req.query.type;
     let id = req.query.id
     let data
@@ -202,7 +203,9 @@ router.get('/report', async (req: Request, res: Response)=>{
         console.log(error)
         response = null
     }
-    
+} catch (error) {
+    res.status(400).send("Error in the generation of report")       
+}
 });
 
 router.get('/inventary/:id', validateToken, async (req: Request, res: Response)=>{
