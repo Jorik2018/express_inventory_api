@@ -411,7 +411,7 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
     });
 });
 
-router.get('/movement/:id', validateToken, async (req: Request, res: Response)=>{
+router.get('/movement/:id', async (req: Request, res: Response)=>{
     try {
         let id: number = Number(req.params.id);
         let response = await prisma.movement.findUnique({
@@ -455,7 +455,7 @@ router.post('/token', async (req: Request, res: Response)=>{
     }
 });
 
-router.post('/movement', async (req: Request, res: Response)=>{
+router.post('/movement', validateToken, async (req: Request, res: Response)=>{
     let data: Movement = req.body;
     data.user_id = req.body.user_id
     let response = await prisma.movement.create({
