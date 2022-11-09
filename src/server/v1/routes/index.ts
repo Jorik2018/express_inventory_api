@@ -68,7 +68,7 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "canceled": x.is_delete,
                     "company": "company",
                     "createDate": moment(x.created_at).format('YYYY/MM/DD'),
-                    "date": x.date,
+                    "date": moment(x.created_at).format('YYYY/MM/DD'),
                     "deleteDate": x.updated_at,
                     "dependence": x.unit_organic,
                     "dependence_id": "id_dependence",
