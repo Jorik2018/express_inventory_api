@@ -62,8 +62,6 @@ router.get('/report', async (req: Request, res: Response)=>{
                         "series": y.inventary.serie
                       })
                 })
-                x.adress=x.address;
-
                 newData.push({
                     "adress": x.address,
                     "adress_destino": x.address_destiny,
