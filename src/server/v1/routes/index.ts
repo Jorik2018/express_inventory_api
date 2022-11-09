@@ -204,6 +204,7 @@ router.get('/report', async (req: Request, res: Response)=>{
         response = null
     }
 } catch (error) {
+    console.log(error)
     res.status(400).send("Error in the generation of report")       
 }
 });
