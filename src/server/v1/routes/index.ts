@@ -455,7 +455,7 @@ router.post('/token', async (req: Request, res: Response)=>{
     }
 });
 
-router.post('/movement', validateToken, async (req: Request, res: Response)=>{
+router.post('/movement', async (req: Request, res: Response)=>{
     let data: Movement = req.body;
     data.user_id = req.body.user_id
     let response = await prisma.movement.create({
