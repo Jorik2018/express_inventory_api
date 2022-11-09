@@ -62,6 +62,8 @@ router.get('/report', async (req: Request, res: Response)=>{
                         "series": y.inventary.serie
                       })
                 })
+                x.adress=x.address;
+
                 newData.push({
                     "adress": x.address,
                     "adress_destino": x.address_destiny,
@@ -166,13 +168,7 @@ router.get('/report', async (req: Request, res: Response)=>{
             break;
     }
     let uniqueId= uuidv4()
-    fs.writeFile('./temp/json/'+uniqueId+'.json', JSON.stringify(newData), 'utf8', (err)=>{
-        if(err){
-            console.log("Error to create a .json file")
-        } else {
-            console.log("Success to create a .json file")
-        }
-    });
+    fs.writeFileSync('./temp/json/'+uniqueId+'.json', JSON.stringify(newData), 'utf8');
     const file = await fsSync.readFile('./temp/json/'+uniqueId+'.json');
     const form = new FormData();
     form.append('template', template);
