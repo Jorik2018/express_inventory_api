@@ -412,20 +412,24 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
 });
 
 router.get('/movement/:id', validateToken, async (req: Request, res: Response)=>{
-    let id: number = Number(req.params.id);
-    let response = await prisma.movement.findUnique({
-        include: {
-            details: {
-                include:{
-                    inventary: true
+    try {
+        let id: number = Number(req.params.id);
+        let response = await prisma.movement.findUnique({
+            include: {
+                details: {
+                    include:{
+                        inventary: true
+                    }
                 }
+            },
+            where: {
+                id: id
             }
-        },
-        where: {
-            id: id
-        }
-    })
-    res.status(200).json(response);
+        })
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(400).send("Error to get data")
+    }
 });
 
 router.post('/token', async (req: Request, res: Response)=>{
@@ -502,7 +506,6 @@ router.post('/details/in', validateToken, async (req: Request, res: Response)=>{
 
 router.post('/details/traslate', validateToken, async (req: Request, res: Response)=>{
     let data: Details_movement = req.body;
-    console.log(data)
     let response = await prisma.details_movement.create({
         data: {
             movement_id: data.movement_id,
