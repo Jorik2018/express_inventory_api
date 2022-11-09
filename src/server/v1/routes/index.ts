@@ -6,7 +6,7 @@ import fs, { createWriteStream } from 'fs';
 import fsSync from 'fs/promises';
 import {v4 as uuidv4} from 'uuid';
 import FormData from 'form-data';
-import * as stream from 'stream';
+import moment from 'moment';
 
 const prisma = new PrismaClient()
 const router = express.Router();
@@ -67,7 +67,7 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "adress_destino": x.address_destiny,
                     "canceled": x.is_delete,
                     "company": "company",
-                    "createDate": x.created_at,
+                    "createDate": moment(x.created_at).format('YYYY/MM/DD'),
                     "date": x.date,
                     "deleteDate": x.updated_at,
                     "dependence": x.unit_organic,
