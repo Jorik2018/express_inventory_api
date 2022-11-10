@@ -150,10 +150,10 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "id": x.id,
                     "local_destino": x.local,
                     "proveedor_destino": x.local_destiny,
-                    "reason": x.reason,
+                    "reason": x.reason==="M"?"MANTENIMIENTO":x.reason==="CO"?"COMISIÓN DE SERVICIOS":"CAPACITACIÓN Y/O EVENTO",
                     "reference": "reference",
                     "register_code": x.register_code,
-                    "type": x.type,
+                    "type": x.type==="S"?"SALIDA":x.type==="R"?"REINGRESO":"DESPLAZAMIENTO",
                     "uid": x.user_id
                 })
             })
