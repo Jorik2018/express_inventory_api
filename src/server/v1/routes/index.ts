@@ -161,6 +161,21 @@ router.get('/report', async (req: Request, res: Response)=>{
         case "inventary":
             template = "ficha_bienes"
             data = await prisma.inventary.findMany()
+            data.map(x=>{
+                newData.push({
+                    "codePatrimonial": x.patrimonial_code,
+                    "denomination": x.denomination,
+                    "num_lote": x.lot,
+                    "marca": x.brand,
+                    "model": x.model,
+                    "color": x.color,
+                    "dimensions": x.dimensions,
+                    "series": x.serie,
+                    "others": x.others,
+                    "condition": x.conservation_state,
+                    "moveId": x.id
+                })
+            })
             break;
         default:
             break;
