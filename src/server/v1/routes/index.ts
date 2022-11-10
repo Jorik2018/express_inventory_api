@@ -173,9 +173,10 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "series": x.serie,
                     "others": x.others,
                     "condition": x.conservation_state,
-                    "moveId": x.id
+                    "moveId": x.id.toString()
                 })
             })
+            console.log(newData)
             break;
         default:
             break;
@@ -211,6 +212,7 @@ router.get('/report', async (req: Request, res: Response)=>{
     } catch (error) {
         console.log(error)
         response = null
+        res.status(400).send("Error in the generation of report in the Java Endpoint")       
     }
 } catch (error) {
     console.log(error)
