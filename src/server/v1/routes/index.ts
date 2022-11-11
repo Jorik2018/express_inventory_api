@@ -12,7 +12,7 @@ const prisma = new PrismaClient()
 const router = express.Router();
 
 router.get('/', (req: Request, res: Response)=>{
-    res.status(200).send("Inventary API")
+    res.status(200).send("Inventory API")
     return;
 });
 
@@ -223,18 +223,23 @@ return;
 });
 
 router.get('/inventary/:id', validateToken, async (req: Request, res: Response)=>{
-    let patrimonial_code: string = req.params.id;
-    let response = await prisma.inventary.findFirst({
-        where: {
-            patrimonial_code: patrimonial_code
-        }
-    })
-    res.status(200).json(response);
+    try {
+        let patrimonial_code: string = req.params.id;
+        let response = await prisma.inventary.findFirst({
+            where: {
+                patrimonial_code: patrimonial_code
+            }
+        })
+        res.status(200).json(response);
+    } catch (error) {
+        res.status(502).send(error)
+    }
     return;
 });
 
 router.get('/movement/:start/:end', validateToken, async (req: Request, res: Response)=>{
-    let start: number = Number(req.params.start);
+    try {
+        let start: number = Number(req.params.start);
     let end: number = Number(req.params.end);
     let type: string = req.query.type?req.query.type as string: "";
     let register_code: string = req.query.register_code?req.query.register_code as string: "";
@@ -314,36 +319,44 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
     res.status(200).json({
         data: response,
         count: count
-    });
+    });   
+    } catch (error) {
+        res.status(502).send(error)
+    }
     return;
 });
 
 router.get('/dashboard', validateToken, async (req: Request, res: Response)=>{
-    let ins = await prisma.movement.count({
-        where:{
-            type: {
-                contains: "I"
+    try {
+        let ins = await prisma.movement.count({
+            where:{
+                type: {
+                    contains: "I"
+                }
             }
-        }
-    })
-    let outs = await prisma.movement.count({
-        where:{
-            type: {
-                not: "I"
+        })
+        let outs = await prisma.movement.count({
+            where:{
+                type: {
+                    not: "I"
+                }
             }
-        }
-    })
-    let inventary = await prisma.inventary.count();
-    res.status(200).json({
-        ins: ins,
-        outs: outs,
-        inventary: inventary
-    })
+        })
+        let inventary = await prisma.inventary.count();
+        res.status(200).json({
+            ins: ins,
+            outs: outs,
+            inventary: inventary
+        })    
+    } catch (error) {
+        res.status(502).send(error)
+    }
     return;
 });
 
 router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Response)=>{
-    let start: number = Number(req.params.start);
+    try {
+        let start: number = Number(req.params.start);
     let end: number = Number(req.params.end);
     let patrimonial_code: string = req.query.patrimonial_code?req.query.patrimonial_code as string:"";
     let denomination: string = req.query.denomination?req.query.denomination as string:"";
@@ -430,7 +443,10 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
     res.status(200).json({
         data: response,
         count: count
-    });
+    });   
+    } catch (error) {
+        res.status(502).send(error)
+    }
     return;
 });
 
@@ -481,7 +497,8 @@ router.post('/token', async (req: Request, res: Response)=>{
 });
 
 router.post('/movement', validateToken, async (req: Request, res: Response)=>{
-    let data: Movement = req.body;
+    try {
+        let data: Movement = req.body;
     data.user_id = req.body.user_id
     let response = await prisma.movement.create({
         data: {
@@ -505,12 +522,16 @@ router.post('/movement', validateToken, async (req: Request, res: Response)=>{
             user_id: data.user_id,
         }
     }); 
-    res.status(200).send(response)
+    res.status(200).send(response)   
+    } catch (error) {
+        res.status(502).send(error)
+    }
     return;
 });
 
 router.post('/details/in', validateToken, async (req: Request, res: Response)=>{
-    let data: Inventary = req.body.data;
+    try {
+        let data: Inventary = req.body.data;
     data.user_id = req.body.user_id
     data.patrimonial_code = data.patrimonial_code===""?"S/C":data.patrimonial_code;
     let id: number = Number(req.body.id)
@@ -527,12 +548,16 @@ router.post('/details/in', validateToken, async (req: Request, res: Response)=>{
             inventary: true
         }
     })
-    res.status(200).json(response2)
+    res.status(200).json(response2)   
+    } catch (error) {
+        res.status(502).send(error)
+    }
     return;
 });
 
 router.post('/details/traslate', validateToken, async (req: Request, res: Response)=>{
-    let data: Details_movement = req.body;
+    try {
+        let data: Details_movement = req.body;
     let response = await prisma.details_movement.create({
         data: {
             movement_id: data.movement_id,
@@ -540,7 +565,10 @@ router.post('/details/traslate', validateToken, async (req: Request, res: Respon
             user_id: req.body.user_id
         }
     });
-    res.status(200).json(response)
+    res.status(200).json(response)   
+    } catch (error) {
+        res.status(502).send(error)
+    }
     return;
 });
 
