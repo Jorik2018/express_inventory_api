@@ -13,6 +13,7 @@ const router = express.Router();
 
 router.get('/', (req: Request, res: Response)=>{
     res.status(200).send("Inventary API")
+    return;
 });
 
 router.get('/report', async (req: Request, res: Response)=>{
@@ -218,6 +219,7 @@ router.get('/report', async (req: Request, res: Response)=>{
     console.log(error)
     res.status(400).send("Error in the generation of report")       
 }
+return;
 });
 
 router.get('/inventary/:id', validateToken, async (req: Request, res: Response)=>{
@@ -228,6 +230,7 @@ router.get('/inventary/:id', validateToken, async (req: Request, res: Response)=
         }
     })
     res.status(200).json(response);
+    return;
 });
 
 router.get('/movement/:start/:end', validateToken, async (req: Request, res: Response)=>{
@@ -312,6 +315,7 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
         data: response,
         count: count
     });
+    return;
 });
 
 router.get('/dashboard', validateToken, async (req: Request, res: Response)=>{
@@ -335,6 +339,7 @@ router.get('/dashboard', validateToken, async (req: Request, res: Response)=>{
         outs: outs,
         inventary: inventary
     })
+    return;
 });
 
 router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Response)=>{
@@ -426,6 +431,7 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
         data: response,
         count: count
     });
+    return;
 });
 
 router.get('/movement/:id', async (req: Request, res: Response)=>{
@@ -447,6 +453,7 @@ router.get('/movement/:id', async (req: Request, res: Response)=>{
     } catch (error) {
         res.status(400).send("Error to get data")
     }
+    return;
 });
 
 router.post('/token', async (req: Request, res: Response)=>{
@@ -470,6 +477,7 @@ router.post('/token', async (req: Request, res: Response)=>{
     } catch (error: any) {
         res.status(400).send(error.response.data)
     }
+    return;
 });
 
 router.post('/movement', validateToken, async (req: Request, res: Response)=>{
@@ -498,6 +506,7 @@ router.post('/movement', validateToken, async (req: Request, res: Response)=>{
         }
     }); 
     res.status(200).send(response)
+    return;
 });
 
 router.post('/details/in', validateToken, async (req: Request, res: Response)=>{
@@ -519,6 +528,7 @@ router.post('/details/in', validateToken, async (req: Request, res: Response)=>{
         }
     })
     res.status(200).json(response2)
+    return;
 });
 
 router.post('/details/traslate', validateToken, async (req: Request, res: Response)=>{
@@ -531,6 +541,7 @@ router.post('/details/traslate', validateToken, async (req: Request, res: Respon
         }
     });
     res.status(200).json(response)
+    return;
 });
 
 export {
