@@ -139,6 +139,7 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "date": moment(x.date).format('YYYY/MM/DD'),
                     "deleteDate": x.updated_at,
                     "dependence": x.unit_organic,
+                    "dependence_destino": x.unit_organic_destiny,
                     "dependence_id": "id_dependence",
                     "details": aux,
                     "dni": x.responsible_user_document,
