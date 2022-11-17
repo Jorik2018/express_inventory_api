@@ -469,7 +469,7 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
                 "created_at": x.created_at,
                 "updated_at": x.updated_at,
                 "is_delete": x.is_delete,
-                "unit_organic":x['details_movements'][0]['movement']['unit_organic'],
+                "unit_organic":x['details_movements'][0]['movement']['unit_organic_destiny'],
                 "local":x['details_movements'][0]['movement']['local'],
                 "responsible_document": x['details_movements'][0]['movement']['destiny_user_document'],
                 "responsible_name": x['details_movements'][0]['movement']['destiny_user_name']
