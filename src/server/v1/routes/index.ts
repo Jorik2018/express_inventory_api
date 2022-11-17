@@ -372,6 +372,17 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
     let response = await prisma.inventary.findMany({
         skip: start,
         take: end,
+        include: {
+            details_movements: {
+                orderBy: {
+                    id: 'desc'
+                },
+                take: 1,
+                include: {
+                    movement: true
+                }
+            }
+        },
         where:{
             patrimonial_code:{
                 contains: patrimonial_code
@@ -406,8 +417,6 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
         }
     })
     let count = await prisma.inventary.count({
-        skip: start,
-        take: end,
         where:{
             patrimonial_code:{
                 contains: patrimonial_code
@@ -442,7 +451,30 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
         }
     })
     res.status(200).json({
-        data: response,
+        data: response.map(x=>{
+            return {
+                "id": x.id,
+                "patrimonial_code": x.patrimonial_code,
+                "denomination": x.denomination,
+                "lot": x.lot,
+                "brand": x.brand,
+                "model": x.model,
+                "color": x.color,
+                "dimensions": x.dimensions,
+                "serie": x.serie,
+                "others": x.others,
+                "conservation_state": x.conservation_state,
+                "user_id": x.user_id,
+                "observations": x.observations,
+                "created_at": x.created_at,
+                "updated_at": x.updated_at,
+                "is_delete": x.is_delete,
+                "unit_organic":x['details_movements'][0]['movement']['unit_organic'],
+                "local":x['details_movements'][0]['movement']['local'],
+                "responsible_document": x['details_movements'][0]['movement']['destiny_user_document'],
+                "responsible_name": x['details_movements'][0]['movement']['destiny_user_name']
+            }
+        }),
         count: count
     });   
     } catch (error) {
