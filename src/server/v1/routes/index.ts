@@ -470,7 +470,7 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
                 "updated_at": x.updated_at,
                 "is_delete": x.is_delete,
                 "unit_organic":x['details_movements'][0]['movement']['unit_organic_destiny'],
-                "local":x['details_movements'][0]['movement']['local'],
+                "local":x['details_movements'][0]['movement']['local_destiny'],
                 "responsible_document": x['details_movements'][0]['movement']['destiny_user_document'],
                 "responsible_name": x['details_movements'][0]['movement']['destiny_user_name']
             }
