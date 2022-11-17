@@ -532,6 +532,9 @@ router.post('/token', async (req: Request, res: Response)=>{
 router.post('/movement', validateToken, async (req: Request, res: Response)=>{
     try {
         let data: Movement = req.body;
+        data.unit_organic_destiny = data.unit_organic_destiny===undefined?data.unit_organic:data.unit_organic_destiny
+        data.local_destiny = data.local_destiny===undefined?data.local:data.local_destiny
+        data.address_destiny = data.address_destiny===undefined?data.address:data.address_destiny
     data.user_id = req.body.user_id
     let response = await prisma.movement.create({
         data: {
