@@ -191,7 +191,7 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "document_authorization": x.auth_document,
                     "email": x.responsible_user_email,
                     "email_destino": x.destiny_user_email,
-                    "unit_ejec": "GOBIERNO REGIONAL DE ANCASH",
+                    "unid_ejec": "GOBIERNO REGIONAL DE ANCASH",
                     "mes": getMonth(x.date),
                     "fullName": x.responsible_user_name,
                     "user_entrega": x.responsible_user_name,
