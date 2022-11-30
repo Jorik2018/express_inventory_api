@@ -16,6 +16,50 @@ router.get('/', (req: Request, res: Response)=>{
     return;
 });
 
+function getMonth(date: any){
+    let res = moment(date).format("MM");
+    let num = Number(res);
+    switch(num){
+        case 1:
+            res = "ENERO";
+            break;
+        case 2:
+            res = "FEBRERO";
+            break;
+            case 3:
+            res = "MARZO";
+            break;
+            case 4:
+            res = "ABRIL";
+            break;
+            case 5:
+            res = "MAYO";
+            break;
+            case 6:
+            res = "JUNIO";
+            break;
+            case 7:
+            res = "JULIO";
+            break;
+            case 8:
+            res = "AGOSTO";
+            break;
+            case 9:
+            res = "SETIEMBRE";
+            break;
+            case 10:
+            res = "OCTUBRE";
+            break;
+            case 11:
+            res = "NOVIEMBRE";
+            break;
+            case 12:
+            res = "DICIEMBRE";
+            break;
+    }
+    return res;
+}
+
 router.get('/report', async (req: Request, res: Response)=>{
     try {
     let type = req.query.type;
@@ -147,7 +191,11 @@ router.get('/report', async (req: Request, res: Response)=>{
                     "document_authorization": x.auth_document,
                     "email": x.responsible_user_email,
                     "email_destino": x.destiny_user_email,
+                    "unit_ejec": "GOBIERNO REGIONAL DE ANCASH",
+                    "mes": getMonth(x.date),
                     "fullName": x.responsible_user_name,
+                    "user_entrega": x.responsible_user_name,
+                    "user_destino": x.destiny_user_name,
                     "fullName_destino": x.destiny_user_name,
                     "id": x.id,
                     "local_destino": x.local,
