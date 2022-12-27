@@ -408,17 +408,10 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
         let start: number = Number(req.params.start);
         let end: number = Number(req.params.end);
         let where:any={};
-        ['patrimonial_code','denomination','brand','model','color','serie'].forEach((k)=>{
+        ['patrimonial_code','denomination','brand','model','color','serie','lot',
+            'others','conservation_state','observations'].forEach((k)=>{
             if(req.query[k])where[k]={contains:req.query[k]};
         });
-        
-
-        let lot: string = req.query.lot ? req.query.lot as string : "";
-        let others: string = req.query.others ? req.query.others as string : "";
-        let conservation_state: string = req.query.conservation_state ? req.query.conservation_state as string : "";
-        let observations: string = req.query.observations ? req.query.observations as string : "";
-        
-        
         let response = await prisma.inventary.findMany({
             skip: start,
             take: end,
@@ -439,6 +432,7 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
             where:where
         })
         res.status(200).json({
+            where:where,
             data: response.map((x:any) => {
                 return {
                     "id": x.id,
