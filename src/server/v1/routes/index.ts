@@ -403,7 +403,7 @@ router.get('/dashboard', validateToken, async (req: Request, res: Response) => {
     return;
 });
 
-router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Response) => {
+router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Response) => {
     try {
         let start: number = Number(req.params.start);
         let end: number = Number(req.params.end);
@@ -412,6 +412,7 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
             'others','conservation_state','observations'].forEach((k)=>{
             if(req.query[k])where[k]={contains:req.query[k]};
         });
+
         let response = await prisma.inventary.findMany({
             skip: start,
             take: end,
@@ -460,6 +461,7 @@ router.get('/inventary/:start/:end', validateToken, async (req: Request, res: Re
             count: count
         });
     } catch (error) {
+        console.error(error);
         res.status(502).send(error)
     }
     return;
