@@ -271,7 +271,7 @@ router.get('/report', async (req: Request, res: Response) => {
     return;
 });
 
-router.get('/inventary/:id', validateToken, async (req: Request, res: Response) => {
+router.get('/inventory/:id', validateToken, async (req: Request, res: Response) => {
     try {
         let patrimonial_code: string = req.params.id;
         let response = await prisma.inventary.findFirst({
