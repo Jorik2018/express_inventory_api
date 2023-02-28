@@ -288,7 +288,6 @@ router.get('/inventory/:id', validateToken, async (req: Request, res: Response) 
 
 router.get('/movement/:start/:end', validateToken, async (req: Request, res: Response) => {
     try {
-        
         let start: number = Number(req.params.start);
         let end: number = Number(req.params.end);
         let type: string = req.query.type ? req.query.type as string : "";
