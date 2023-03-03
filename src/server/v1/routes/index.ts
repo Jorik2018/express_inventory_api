@@ -301,9 +301,11 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
         let unit_organic_destiny: string = q.unit_organic_destiny as string || "";
         let local_destiny: string = q.local_destiny as string || "";
         let date: string | Date = q.date as string || "";*/
+        console.log(q);
         let where:any=Object.keys(q).forEach(function(key) {
             q[key] = {contains:q[key]};
         });
+        
         where={...where,
             type: type === "" ? {
                 not: "I"
