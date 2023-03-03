@@ -361,9 +361,7 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
                     contains: local_destiny
                 } : {},
                 date: date !== "" ? { equals: date } : {}
-            },
-            skip: start,
-            take: end
+            }
         });
         res.status(200).json({
             data: response,
