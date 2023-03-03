@@ -91,25 +91,25 @@ router.get('/report', async (req: Request, res: Response) => {
                 data.map(x => {
                     x.details.map((y:any) => {
                         aux.push({
-                            "canceled": y.inventary.is_delete,
-                            "codePatrimonial": y.inventary.patrimonial_code,
-                            "color": y.inventary.color,
-                            "condition": y.inventary.conservation_state,
-                            "denomination": y.inventary.denomination,
-                            "dimention": y.inventary.dimensions,
-                            "id": y.inventary.id,
-                            "marca": y.inventary.brand,
-                            "model": y.inventary.model,
-                            "moveId": y.movement_id,
-                            "num_lote": y.inventary.lot,
-                            "observation": y.inventary.observations,
-                            "others": y.inventary.others,
-                            "series": y.inventary.serie
+                            canceled: y.inventary.is_delete,
+                            codePatrimonial: y.inventary.patrimonial_code,
+                            color: y.inventary.color,
+                            condition: y.inventary.conservation_state,
+                            denomination: y.inventary.denomination,
+                            dimention: y.inventary.dimensions,
+                            id: y.inventary.id,
+                            marca: y.inventary.brand,
+                            model: y.inventary.model,
+                            moveId: y.movement_id,
+                            num_lote: y.inventary.lot,
+                            observation: y.inventary.observations,
+                            others: y.inventary.others,
+                            series: y.inventary.serie
                         })
                     })
                     newData.push({
-                        "adress": x.address,
-                        "adress_destino": x.address_destiny,
+                        adress: x.address,
+                        adress_destino: x.address_destiny,
                         "canceled": x.is_delete,
                         "company": "company",
                         "createDate": moment(x.created_at).format('YYYY/MM/DD'),
@@ -158,49 +158,49 @@ router.get('/report', async (req: Request, res: Response) => {
                 data.map((x:any) => {
                     x.details.map((y:any) => {
                         aux.push({
-                            "canceled": y.inventary.is_delete,
+                            canceled: y.inventary.is_delete,
                             "codePatrimonial": y.inventary.patrimonial_code,
                             "color": y.inventary.color,
                             "condition": y.inventary.conservation_state,
-                            "denomination": y.inventary.denomination,
-                            "dimention": y.inventary.dimensions,
-                            "id": y.inventary.id,
-                            "marca": y.inventary.brand,
+                            denomination: y.inventary.denomination,
+                            dimention: y.inventary.dimensions,
+                            id: y.inventary.id,
+                            marca: y.inventary.brand,
                             "model": y.inventary.model,
                             "moveId": y.movement_id,
                             "num_lote": y.inventary.lot,
                             "observation": y.inventary.observations,
                             "others": y.inventary.others,
-                            "series": y.inventary.serie
+                            series: y.inventary.serie
                         })
                     })
                     newData.push({
-                        "adress": x.address,
-                        "adress_destino": x.address_destiny,
-                        "canceled": x.is_delete,
-                        "company": "company",
+                        adress: x.address,
+                        adress_destino: x.address_destiny,
+                        canceled: x.is_delete,
+                        company: "company",
                         "createDate": moment(x.created_at).format('YYYY/MM/DD'),
                         "date": moment(x.date).format('YYYY/MM/DD'),
-                        "deleteDate": x.updated_at,
-                        "dependence": x.unit_organic,
+                        deleteDate: x.updated_at,
+                        dependence: x.unit_organic,
                         "dependence_destino": x.unit_organic_destiny,
-                        "dependence_id": "id_dependence",
-                        "details": aux,
-                        "dni": x.responsible_user_document,
-                        "dni_destino": x.destiny_user_document,
-                        "document_authorization": x.auth_document,
-                        "email": x.responsible_user_email,
+                        dependence_id: "id_dependence",
+                        details: aux,
+                        dni: x.responsible_user_document,
+                        dni_destino: x.destiny_user_document,
+                        document_authorization: x.auth_document,
+                        email: x.responsible_user_email,
                         "email_destino": x.destiny_user_email,
                         "unid_ejec": "GOBIERNO REGIONAL DE ANCASH",
                         "mes": getMonth(x.date),
-                        "fullName": x.responsible_user_name,
-                        "user_entrega": x.responsible_user_name,
-                        "user_destino": x.destiny_user_name,
-                        "fullName_destino": x.destiny_user_name,
-                        "id": x.id,
-                        "local_destino": x.local,
-                        "proveedor_destino": x.local_destiny,
-                        "reason": x.reason === "M" ? "MANTENIMIENTO" : x.reason === "CO" ? "COMISIÓN DE SERVICIOS" : "CAPACITACIÓN Y/O EVENTO",
+                        fullName: x.responsible_user_name,
+                        user_entrega: x.responsible_user_name,
+                        user_destino: x.destiny_user_name,
+                        fullName_destino: x.destiny_user_name,
+                        id: x.id,
+                        local_destino: x.local,
+                        proveedor_destino: x.local_destiny,
+                        reason: x.reason === "M" ? "MANTENIMIENTO" : x.reason === "CO" ? "COMISIÓN DE SERVICIOS" : "CAPACITACIÓN Y/O EVENTO",
                         "reference": "reference",
                         "register_code": x.register_code,
                         "type": x.type === "S" ? "SALIDA" : x.type === "R" ? "REINGRESO" : "DESPLAZAMIENTO",
@@ -213,17 +213,17 @@ router.get('/report', async (req: Request, res: Response) => {
                 data = await prisma.inventary.findMany()
                 data.map((x:any) => {
                     newData.push({
-                        "codePatrimonial": x.patrimonial_code,
-                        "denomination": x.denomination,
-                        "num_lote": x.lot,
-                        "marca": x.brand,
-                        "model": x.model,
-                        "color": x.color,
-                        "dimensions": x.dimensions,
-                        "series": x.serie,
-                        "others": x.others,
-                        "condition": x.conservation_state,
-                        "moveId": x.id.toString()
+                        codePatrimonial: x.patrimonial_code,
+                        denomination: x.denomination,
+                        num_lote: x.lot,
+                        marca: x.brand,
+                        model: x.model,
+                        color: x.color,
+                        dimensions: x.dimensions,
+                        series: x.serie,
+                        others: x.others,
+                        condition: x.conservation_state,
+                        moveId: x.id.toString()
                     })
                 })
                 console.log(newData)
@@ -288,80 +288,36 @@ router.get('/inventory/:id', validateToken, async (req: Request, res: Response) 
 
 router.get('/movement/:start/:end', validateToken, async (req: Request, res: Response) => {
     try {
+        let q:any={...req.query};
         let start: number = Number(req.params.start);
         let end: number = Number(req.params.end);
-        let type: string = req.query.type ? req.query.type as string : "";
-        let register_code: string = req.query.register_code ? req.query.register_code as string : "";
-        let responsible_user: string = req.query.responsible_user ? req.query.responsible_user as string : "";
-        let destiny_user: string = req.query.destiny_user ? req.query.destiny_user as string : "";
-        let unit_organic: string = req.query.unit_organic ? req.query.unit_organic as string : "";
-        let local: string = req.query.local ? req.query.local as string : "";
-        let unit_organic_destiny: string = req.query.unit_organic_destiny ? req.query.unit_organic_destiny as string : "";
-        let local_destiny: string = req.query.local_destiny ? req.query.local_destiny as string : "";
-        let date: string | Date = req.query.date ? req.query.date as string : "";
+
+        let type: string = q.type as string|| "";
+        /*let register_code= q.register_code ||"";
+        let responsible_user: string = q.responsible_user as string || "";
+        let destiny_user: string = q.destiny_user as string || "";
+        let unit_organic: string = q.unit_organic as string || "";
+        let local: string = q.local as string || "";
+        let unit_organic_destiny: string = q.unit_organic_destiny as string || "";
+        let local_destiny: string = q.local_destiny as string || "";
+        let date: string | Date = q.date as string || "";*/
+        let where:any=Object.keys(q).forEach(function(key) {
+            q[key] = {contains:q[key]};
+        });
+        where={...where,
+            type: type === "" ? {
+                not: "I"
+            } : {
+                contains: type
+            }
+        };
         let response = await prisma.movement.findMany({
-            where: {
-                type: type === "" ? {
-                    not: "I"
-                } : {
-                    contains: type
-                },
-                register_code: {
-                    contains: register_code
-                },
-                responsible_user_name: {
-                    contains: responsible_user
-                },
-                destiny_user_name: {
-                    contains: destiny_user
-                },
-                unit_organic: {
-                    contains: unit_organic
-                },
-                unit_organic_destiny: unit_organic_destiny !== "" ? {
-                    contains: unit_organic_destiny
-                } : {},
-                local: {
-                    contains: local
-                },
-                local_destiny: local_destiny !== "" ? {
-                    contains: local_destiny
-                } : {},
-                date: date !== "" ? { equals: date } : {}
-            },
+            where: where,
             skip: start,
             take: end
         })
         let count = await prisma.movement.count({
-            where: {
-                type: type === "" ? {
-                    not: "I"
-                } : {
-                    contains: type
-                },
-                register_code: {
-                    contains: register_code
-                },
-                responsible_user_name: {
-                    contains: responsible_user
-                },
-                destiny_user_name: {
-                    contains: destiny_user
-                },
-                unit_organic: {
-                    contains: unit_organic
-                },
-                unit_organic_destiny: unit_organic_destiny !== "" ? {
-                    contains: unit_organic_destiny
-                } : {},
-                local: {
-                    contains: local
-                },
-                local_destiny: local_destiny !== "" ? {
-                    contains: local_destiny
-                } : {},
-                date: date !== "" ? { equals: date } : {}
-            }
+            where: where
         });
         res.status(200).json({
             data: response,
