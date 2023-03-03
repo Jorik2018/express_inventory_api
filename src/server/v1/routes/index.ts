@@ -293,11 +293,10 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
         let end: number = Number(req.params.end);
         let type: string = q.type as string|| "";
         console.log(q);
-        let where:any=Object.keys(q).forEach((key)=>{
+        Object.keys(q).forEach((key)=>{
             q[key] = {contains:q[key]};
         });
-        
-        where={...where,
+        let where={...q,
             type: type === "" ? {
                 not: "I"
             } : {
