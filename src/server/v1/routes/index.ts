@@ -291,18 +291,9 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
         let q:any={...req.query};
         let start: number = Number(req.params.start);
         let end: number = Number(req.params.end);
-
         let type: string = q.type as string|| "";
-        /*let register_code= q.register_code ||"";
-        let responsible_user: string = q.responsible_user as string || "";
-        let destiny_user: string = q.destiny_user as string || "";
-        let unit_organic: string = q.unit_organic as string || "";
-        let local: string = q.local as string || "";
-        let unit_organic_destiny: string = q.unit_organic_destiny as string || "";
-        let local_destiny: string = q.local_destiny as string || "";
-        let date: string | Date = q.date as string || "";*/
         console.log(q);
-        let where:any=Object.keys(q).forEach(function(key) {
+        let where:any=Object.keys(q).forEach((key)=>{
             q[key] = {contains:q[key]};
         });
         
