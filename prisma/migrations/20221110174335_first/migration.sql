@@ -1,5 +1,5 @@
 -- CreateTable
-CREATE TABLE `Inventary` (
+CREATE TABLE `inventory` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `patrimonial_code` VARCHAR(191) NOT NULL DEFAULT 'S/C',
     `denomination` VARCHAR(191) NOT NULL,
@@ -52,7 +52,7 @@ CREATE TABLE `Movement` (
 CREATE TABLE `Details_movement` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `movement_id` INTEGER NOT NULL,
-    `inventary_id` INTEGER NOT NULL,
+    `inventory_id` INTEGER NOT NULL,
     `user_id` VARCHAR(191) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
@@ -65,4 +65,4 @@ CREATE TABLE `Details_movement` (
 ALTER TABLE `Details_movement` ADD CONSTRAINT `Details_movement_movement_id_fkey` FOREIGN KEY (`movement_id`) REFERENCES `Movement`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Details_movement` ADD CONSTRAINT `Details_movement_inventary_id_fkey` FOREIGN KEY (`inventary_id`) REFERENCES `Inventary`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Details_movement` ADD CONSTRAINT `Details_movement_inventory_id_fkey` FOREIGN KEY (`inventory_id`) REFERENCES `Inventary`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Inventary{
+model Inventory{
   id Int @id @default(autoincrement())
   patrimonial_code String @default("S/C")
   denomination String
@@ -21,7 +21,7 @@ model Inventary{
   dimensions String
   serie String
   others String
-  conservation_state String
+  conservation_state String @map("conservation_state")
   user_id String
   observations String
   details_movements Details_movement[]
@@ -61,8 +61,8 @@ model Details_movement{
   id Int @id @default(autoincrement())
   movement Movement @relation(fields: [movement_id], references: [id])
   movement_id Int
-  inventary Inventary @relation(fields: [inventary_id], references: [id])
-  inventary_id Int
+  Inventory Inventory @relation(fields: [Inventory_id], references: [id])
+  Inventory_id Int
   user_id String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt

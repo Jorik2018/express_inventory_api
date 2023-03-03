@@ -1,4 +1,4 @@
-import { PrismaClient, Movement, Inventary, Details_movement } from '@prisma/client'
+import { PrismaClient, Movement, Inventory, Details_movement } from '@prisma/client'
 import express, { Request, Response } from 'express';
 import { validateToken } from '../auth';
 import axios, { AxiosError } from 'axios';
@@ -75,7 +75,7 @@ router.get('/report', async (req: Request, res: Response) => {
                     include: {
                         details: {
                             include: {
-                                inventary: true
+                                inventory: true
                             }
                         },
                     },
@@ -91,20 +91,20 @@ router.get('/report', async (req: Request, res: Response) => {
                 data.map(x => {
                     x.details.map((y:any) => {
                         aux.push({
-                            canceled: y.inventary.is_delete,
-                            codePatrimonial: y.inventary.patrimonial_code,
-                            color: y.inventary.color,
-                            condition: y.inventary.conservation_state,
-                            denomination: y.inventary.denomination,
-                            dimention: y.inventary.dimensions,
-                            id: y.inventary.id,
-                            marca: y.inventary.brand,
-                            model: y.inventary.model,
+                            canceled: y.inventory.is_delete,
+                            codePatrimonial: y.inventory.patrimonial_code,
+                            color: y.inventory.color,
+                            condition: y.inventory.conservation_state,
+                            denomination: y.inventory.denomination,
+                            dimention: y.inventory.dimensions,
+                            id: y.inventory.id,
+                            marca: y.inventory.brand,
+                            model: y.inventory.model,
                             moveId: y.movement_id,
-                            num_lote: y.inventary.lot,
-                            observation: y.inventary.observations,
-                            others: y.inventary.others,
-                            series: y.inventary.serie
+                            num_lote: y.inventory.lot,
+                            observation: y.inventory.observations,
+                            others: y.inventory.others,
+                            series: y.inventory.serie
                         })
                     })
                     newData.push({
@@ -142,7 +142,7 @@ router.get('/report', async (req: Request, res: Response) => {
                     include: {
                         details: {
                             include: {
-                                inventary: true
+                                inventory: true
                             }
                         },
                     },
@@ -158,20 +158,20 @@ router.get('/report', async (req: Request, res: Response) => {
                 data.map((x:any) => {
                     x.details.map((y:any) => {
                         aux.push({
-                            canceled: y.inventary.is_delete,
-                            "codePatrimonial": y.inventary.patrimonial_code,
-                            "color": y.inventary.color,
-                            "condition": y.inventary.conservation_state,
-                            denomination: y.inventary.denomination,
-                            dimention: y.inventary.dimensions,
-                            id: y.inventary.id,
-                            marca: y.inventary.brand,
-                            "model": y.inventary.model,
+                            canceled: y.inventory.is_delete,
+                            "codePatrimonial": y.inventory.patrimonial_code,
+                            "color": y.inventory.color,
+                            "condition": y.inventory.conservation_state,
+                            denomination: y.inventory.denomination,
+                            dimention: y.inventory.dimensions,
+                            id: y.inventory.id,
+                            marca: y.inventory.brand,
+                            "model": y.inventory.model,
                             "moveId": y.movement_id,
-                            "num_lote": y.inventary.lot,
-                            "observation": y.inventary.observations,
-                            "others": y.inventary.others,
-                            series: y.inventary.serie
+                            "num_lote": y.inventory.lot,
+                            "observation": y.inventory.observations,
+                            "others": y.inventory.others,
+                            series: y.inventory.serie
                         })
                     })
                     newData.push({
@@ -208,9 +208,9 @@ router.get('/report', async (req: Request, res: Response) => {
                     })
                 })
                 break;
-            case "inventary":
+            case "inventory":
                 template = "ficha_bienes"
-                data = await prisma.inventary.findMany()
+                data = await prisma.inventory.findMany()
                 data.map((x:any) => {
                     newData.push({
                         codePatrimonial: x.patrimonial_code,
@@ -274,7 +274,7 @@ router.get('/report', async (req: Request, res: Response) => {
 router.get('/inventory/:id', validateToken, async (req: Request, res: Response) => {
     try {
         let patrimonial_code: string = req.params.id;
-        let response = await prisma.inventary.findFirst({
+        let response = await prisma.inventory.findFirst({
             where: {
                 patrimonial_code: patrimonial_code
             }
@@ -295,14 +295,14 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
         Object.keys(q).forEach((key)=>{
             q[key] = {contains:q[key]};
         });
-        console.log(q);
+        
         let where={...q,
             type: type === "" ? {
                 not: "I"
             } : {
                 contains: type
             }
-        };
+        };console.log(q);
         let response = await prisma.movement.findMany({
             where: where,
             skip: start,
@@ -337,11 +337,11 @@ router.get('/dashboard', validateToken, async (req: Request, res: Response) => {
                 }
             }
         })
-        let inventary = await prisma.inventary.count();
+        let inventory = await prisma.inventory.count();
         res.status(200).json({
             ins: ins,
             outs: outs,
-            inventary: inventary
+            inventory: inventory
         })
     } catch (error) {
         res.status(502).send(error)
@@ -359,7 +359,7 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
             if(req.query[k])where[k]={contains:req.query[k]};
         });
 
-        let response = await prisma.inventary.findMany({
+        let response = await prisma.inventory.findMany({
             skip: start,
             take: end,
             include: {
@@ -375,33 +375,33 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
             },
             where:where
         })
-        let count = await prisma.inventary.count({
+        let count = await prisma.inventory.count({
             where:where
         })
         res.status(200).json({
             where:where,
             data: response.map((x:any) => {
                 return {
-                    "id": x.id,
-                    "patrimonial_code": x.patrimonial_code,
-                    "denomination": x.denomination,
-                    "lot": x.lot,
-                    "brand": x.brand,
-                    "model": x.model,
-                    "color": x.color,
-                    "dimensions": x.dimensions,
-                    "serie": x.serie,
-                    "others": x.others,
-                    "conservation_state": x.conservation_state,
-                    "user_id": x.user_id,
-                    "observations": x.observations,
-                    "created_at": x.created_at,
-                    "updated_at": x.updated_at,
-                    "is_delete": x.is_delete,
-                    "unit_organic": x['details_movements'][0]['movement']['unit_organic_destiny'],
-                    "local": x['details_movements'][0]['movement']['local_destiny'],
-                    "responsible_document": x['details_movements'][0]['movement']['destiny_user_document'],
-                    "responsible_name": x['details_movements'][0]['movement']['destiny_user_name']
+                    id: x.id,
+                    patrimonial_code: x.patrimonial_code,
+                    denomination: x.denomination,
+                    lot: x.lot,
+                    brand: x.brand,
+                    model: x.model,
+                    color: x.color,
+                    dimensions: x.dimensions,
+                    serie: x.serie,
+                    others: x.others,
+                    conservation_state: x.conservation_state,
+                    user_id: x.user_id,
+                    observations: x.observations,
+                    created_at: x.created_at,
+                    updated_at: x.updated_at,
+                    is_delete: x.is_delete,
+                    unit_organic: x['details_movements'][0]['movement']['unit_organic_destiny'],
+                    local: x['details_movements'][0]['movement']['local_destiny'],
+                    responsible_document: x['details_movements'][0]['movement']['destiny_user_document'],
+                    responsible_name: x['details_movements'][0]['movement']['destiny_user_name']
                 }
             }),
             count: count
@@ -420,7 +420,7 @@ router.get('/movement/:id', async (req: Request, res: Response) => {
             include: {
                 details: {
                     include: {
-                        inventary: true
+                        inventory: true
                     }
                 }
             },
@@ -497,21 +497,21 @@ router.post('/movement', validateToken, async (req: Request, res: Response) => {
 
 router.post('/details/in', validateToken, async (req: Request, res: Response) => {
     try {
-        let data: Inventary = req.body.data;
+        let data: Inventory = req.body.data;
         data.user_id = req.body.user_id
         data.patrimonial_code = data.patrimonial_code === "" ? "S/C" : data.patrimonial_code;
         let id: number = Number(req.body.id)
-        let response = await prisma.inventary.create({
+        let response = await prisma.inventory.create({
             data: data,
         });
         let response2 = await prisma.details_movement.create({
             data: {
                 movement_id: id,
-                inventary_id: response.id,
+                inventory_id: response.id,
                 user_id: req.body.user_id
             },
             include: {
-                inventary: true
+                inventory: true
             }
         })
         res.status(200).json(response2)
@@ -527,7 +527,7 @@ router.post('/details/traslate', validateToken, async (req: Request, res: Respon
         let response = await prisma.details_movement.create({
             data: {
                 movement_id: data.movement_id,
-                inventary_id: data.inventary_id,
+                inventory_id: data.inventory_id,
                 user_id: req.body.user_id
             }
         });
