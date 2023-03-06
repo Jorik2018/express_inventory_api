@@ -316,6 +316,7 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
             count: count
         });
     } catch (error) {
+        console.log(error);
         res.status(502).send(error)
     }
     return;
