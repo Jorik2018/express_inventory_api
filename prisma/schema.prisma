@@ -62,7 +62,7 @@ model Details_movement{
   movement Movement @relation(fields: [movement_id], references: [id])
   movement_id Int
   Inventory Inventory @relation(fields: [Inventory_id], references: [id])
-  Inventory_id Int
+  inventory_id Int
   user_id String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
