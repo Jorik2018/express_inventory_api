@@ -430,7 +430,6 @@ router.get('/movement/:id', async (req: Request, res: Response) => {
         })
         res.status(200).json(response);
     } catch (error) {
-        console.log(error);
         console.error(error);
         res.status(400).send("Error to get data--")
     }
