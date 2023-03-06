@@ -417,13 +417,13 @@ router.get('/movement/:id', async (req: Request, res: Response) => {
     try {
         let id: number = Number(req.params.id);
         let response = await prisma.movement.findUnique({
-            /*include: {
+            include: {
                 details: {
                     include: {
                         inventory: true
                     }
                 }
-            },*/
+            },
             where: {
                 id: id
             }

@@ -61,7 +61,7 @@ model Details_movement{
   id Int @id @default(autoincrement())
   movement Movement @relation(fields: [movement_id], references: [id])
   movement_id Int
-  Inventory Inventory @relation(fields: [Inventory_id], references: [id])
+  inventory Inventory @relation(fields: [inventory_id], references: [id])
   inventory_id Int
   user_id String
   created_at DateTime @default(now())
