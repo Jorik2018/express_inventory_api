@@ -383,6 +383,7 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
         res.status(200).json({
             where:where,
             data: response.map((x:any) => {
+                console.log(x);
                 return {
                     id: x.id,
                     patrimonial_code: x.patrimonial_code,
@@ -399,11 +400,11 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
                     observations: x.observations,
                     created_at: x.created_at,
                     updated_at: x.updated_at,
-                    is_delete: x.is_delete,
+                    is_delete: x.is_delete/*,
                     unit_organic: x['MovementDetails'][0]['movement']['unit_organic_destiny'],
                     local: x['MovementDetails'][0]['movement']['local_destiny'],
                     responsible_document: x['MovementDetails'][0]['movement']['destiny_user_document'],
-                    responsible_name: x['MovementDetails'][0]['movement']['destiny_user_name']
+                    responsible_name: x['MovementDetails'][0]['movement']['destiny_user_name']*/
                 }
             }),
             count: count
