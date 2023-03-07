@@ -24,7 +24,7 @@ model Inventory{
   conservation_state String @map("conservation_state")
   user_id String
   observations String
-  details_movements Details_movement[]
+  details MovementDetail[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   is_delete Boolean @default(false)
@@ -50,14 +50,14 @@ model Movement{
   destiny_user_email String
   date DateTime
   user_id String
-  details Details_movement[]
+  details MovementDetail[]
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   is_delete Boolean @default(false)
 }
 
 
-model Details_movement{
+model MovementDetail{
   id Int @id @default(autoincrement())
   movement Movement @relation(fields: [movement_id], references: [id])
   movement_id Int
@@ -67,4 +67,6 @@ model Details_movement{
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
   is_delete Boolean @default(false)
+
+  @@map("details_movement")
 }

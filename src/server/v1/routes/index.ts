@@ -1,4 +1,4 @@
-import { PrismaClient, Movement, Inventory, Details_movement } from '@prisma/client'
+import { PrismaClient, Movement, Inventory,  MovementDetail } from '@prisma/client'
 import express, { Request, Response } from 'express';
 import { validateToken } from '../auth';
 import axios, { AxiosError } from 'axios';
@@ -364,7 +364,8 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
             skip: start,
             take: end,
             include: {
-                details_movements: {
+                
+                details: {
                     orderBy: {
                         id: 'desc'
                     },
@@ -399,10 +400,10 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
                     created_at: x.created_at,
                     updated_at: x.updated_at,
                     is_delete: x.is_delete,
-                    unit_organic: x['details_movements'][0]['movement']['unit_organic_destiny'],
-                    local: x['details_movements'][0]['movement']['local_destiny'],
-                    responsible_document: x['details_movements'][0]['movement']['destiny_user_document'],
-                    responsible_name: x['details_movements'][0]['movement']['destiny_user_name']
+                    unit_organic: x['MovementDetails'][0]['movement']['unit_organic_destiny'],
+                    local: x['MovementDetails'][0]['movement']['local_destiny'],
+                    responsible_document: x['MovementDetails'][0]['movement']['destiny_user_document'],
+                    responsible_name: x['MovementDetails'][0]['movement']['destiny_user_name']
                 }
             }),
             count: count
@@ -441,9 +442,6 @@ router.post('/token', async (req: Request, res: Response) => {
     let code: string = req.body.code;
     let user: string = process.env.CLIENT_ID_OAUTH || '';
     let password: string = process.env.CLIENT_SECRET_OAUTH || '';
-    console.log(code)
-    console.log(user)
-    console.log(password)
     let response
     try {
         response = await axios({
@@ -501,24 +499,15 @@ router.post('/movement', validateToken, async (req: Request, res: Response) => {
 router.delete('/detail/:id', validateToken, async (req: Request, res: Response) => {
     try {
         let id: number = Number(req.params.id);
-        let response = await prisma.Details_movement.findUnique({
-            include: {
-                details: {
-                    include: {
-                        inventory: true
-                    }
-                }
-            },
+        const deleted = await prisma.movementDetail.update({
             where: {
                 id: id
+            },
+            data:{
+                is_delete:true
             }
-        })
-        const deletedAuthor = await prisma.movement.delete({
-            where: {
-                id: id
-            },
           });
-        res.status(200).json(deletedAuthor);
+        res.status(200).json(deleted);
     } catch (error) {
         console.error(error);
         res.status(400).send("Error to get data--")
@@ -538,7 +527,7 @@ router.post('/details/in', validateToken, async (req: Request, res: Response) =>
             data: data,
         });
 
-        let response2 = await prisma.details_movement.create({
+        let response2 = await prisma.movementDetail.create({
             data: {
                 movement_id: id,
                 inventory_id: response.id,
@@ -559,8 +548,8 @@ router.post('/details/in', validateToken, async (req: Request, res: Response) =>
 
 router.post('/details/traslate', validateToken, async (req: Request, res: Response) => {
     try {
-        let data: Details_movement = req.body;
-        let response = await prisma.details_movement.create({
+        let data: MovementDetail = req.body;
+        let response = await prisma.movementDetail.create({
             data: {
                 movement_id: data.movement_id,
                 inventory_id: data.inventory_id,
