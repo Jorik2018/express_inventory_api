@@ -381,10 +381,8 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
             where:where
         })
         res.status(200).json({
-            where:where,
             data: response.map((x:any) => {
-                console.log(x);
-                return {
+                let o:any={
                     id: x.id,
                     patrimonial_code: x.patrimonial_code,
                     denomination: x.denomination,
@@ -400,12 +398,18 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
                     observations: x.observations,
                     created_at: x.created_at,
                     updated_at: x.updated_at,
-                    is_delete: x.is_delete/*,
-                    unit_organic: x['MovementDetails'][0]['movement']['unit_organic_destiny'],
-                    local: x['MovementDetails'][0]['movement']['local_destiny'],
-                    responsible_document: x['MovementDetails'][0]['movement']['destiny_user_document'],
-                    responsible_name: x['MovementDetails'][0]['movement']['destiny_user_name']*/
+                    is_delete: x.is_delete
+                };
+                if(x.details){
+                    let d:Movement=x.details[0].movement;
+                    o={...o,
+                        unit_organic:d.unit_organic_destiny,
+                        local:d.local_destiny,
+                        responsible_document:d.destiny_user_document,
+                        responsible_name:d.destiny_user_name
+                    };
                 }
+                return o;
             }),
             count: count
         });
