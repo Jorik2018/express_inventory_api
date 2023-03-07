@@ -492,7 +492,36 @@ router.post('/movement', validateToken, async (req: Request, res: Response) => {
         });
         res.status(200).send(response)
     } catch (error) {
+        console.error(error)
         res.status(502).send(error)
+    }
+    return;
+});
+
+router.delete('/detail/:id', validateToken, async (req: Request, res: Response) => {
+    try {
+        let id: number = Number(req.params.id);
+        let response = await prisma.Details_movement.findUnique({
+            include: {
+                details: {
+                    include: {
+                        inventory: true
+                    }
+                }
+            },
+            where: {
+                id: id
+            }
+        })
+        const deletedAuthor = await prisma.movement.delete({
+            where: {
+                id: id
+            },
+          });
+        res.status(200).json(deletedAuthor);
+    } catch (error) {
+        console.error(error);
+        res.status(400).send("Error to get data--")
     }
     return;
 });
@@ -503,9 +532,12 @@ router.post('/details/in', validateToken, async (req: Request, res: Response) =>
         data.user_id = req.body.user_id
         data.patrimonial_code = data.patrimonial_code === "" ? "S/C" : data.patrimonial_code;
         let id: number = Number(req.body.id)
+      //No existe opcion editar
+      //ddebe ingresar {id:?,inventory:{}}
         let response = await prisma.inventory.create({
             data: data,
         });
+
         let response2 = await prisma.details_movement.create({
             data: {
                 movement_id: id,
