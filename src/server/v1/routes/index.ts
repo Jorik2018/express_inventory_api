@@ -518,6 +518,7 @@ router.post('/details/in', validateToken, async (req: Request, res: Response) =>
         })
         res.status(200).json(response2)
     } catch (error) {
+        console.error(error);
         console.log(error);
         res.status(502).send(error)
     }
