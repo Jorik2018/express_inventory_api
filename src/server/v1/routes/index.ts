@@ -525,7 +525,6 @@ router.post('/details/in', validateToken, async (req: Request, res: Response) =>
     return;
 });
 
-
 router.post('/details/traslate', validateToken, async (req: Request, res: Response) => {
     try {
         let data: Details_movement = req.body;
