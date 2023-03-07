@@ -563,6 +563,7 @@ router.post('/details/traslate', validateToken, async (req: Request, res: Respon
         });
         res.status(200).json(response)
     } catch (error) {
+        console.log(error);
         res.status(502).send(error)
     }
     return;
