@@ -47,8 +47,7 @@ async function validateToken(req: Request, res: Response, next: NextFunction){
         }
     } else {
         res.status(400).json({
-            "message": "Something went wrong",
-            "data": null,
+            "message": "token is empty",
             "error": "Unknow"
         })
     }
