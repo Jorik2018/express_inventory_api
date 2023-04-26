@@ -159,18 +159,18 @@ router.get('/report', async (req: Request, res: Response) => {
                     x.details.map((y:any) => {
                         aux.push({
                             canceled: y.inventory.is_delete,
-                            "codePatrimonial": y.inventory.patrimonial_code,
-                            "color": y.inventory.color,
-                            "condition": y.inventory.conservation_state,
+                            codePatrimonial: y.inventory.patrimonial_code,
+                            color: y.inventory.color,
+                            condition: y.inventory.conservation_state,
                             denomination: y.inventory.denomination,
                             dimention: y.inventory.dimensions,
                             id: y.inventory.id,
                             marca: y.inventory.brand,
-                            "model": y.inventory.model,
-                            "moveId": y.movement_id,
-                            "num_lote": y.inventory.lot,
-                            "observation": y.inventory.observations,
-                            "others": y.inventory.others,
+                            model: y.inventory.model,
+                            moveId: y.movement_id,
+                            num_lote: y.inventory.lot,
+                            observation: y.inventory.observations,
+                            others: y.inventory.others,
                             series: y.inventory.serie
                         })
                     })
@@ -232,6 +232,11 @@ router.get('/report', async (req: Request, res: Response) => {
                 break;
         }
         let uniqueId = uuidv4()
+        try {
+            fs.mkdirSync('./temp/json/', { recursive: true } );
+        } catch (e) {
+            console.log('Cannot create folder ', e);
+        }
         fs.writeFileSync('./temp/json/' + uniqueId + '.json', JSON.stringify(newData), 'utf8');
         const file = await fsSync.readFile('./temp/json/' + uniqueId + '.json');
         const form = new FormData();

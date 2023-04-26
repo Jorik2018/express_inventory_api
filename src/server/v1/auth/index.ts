@@ -3,15 +3,16 @@ import { NextFunction, Request, Response } from "express";
 
 async function validateToken(req: Request, res: Response, next: NextFunction){
     req.body.user_id = `1`;
-    next();
-    /*
+   
+    
     if(req.headers.authorization!==undefined){
         
   
         let token = req.headers.authorization.split(" ")[1]
         if(token){
             try {
-                let url = process.env.OAUTH_URL || '';
+                next();
+                /*let url = process.env.OAUTH_URL || '';
                 url = url+"/api/me"
                 let response = await axios({
                     url: url,
@@ -29,7 +30,7 @@ async function validateToken(req: Request, res: Response, next: NextFunction){
                         "data": null,
                         "error": "Unknow"
                     })
-                }
+                }*/
             } catch (error: any) {
                 res.status(500).json({
                     "message": "Something went wrong",
@@ -50,7 +51,7 @@ async function validateToken(req: Request, res: Response, next: NextFunction){
             "data": null,
             "error": "Unknow"
         })
-    }*/
+    }
 }
 
 
