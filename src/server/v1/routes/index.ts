@@ -223,6 +223,7 @@ router.get('/report', async (req: Request, res: Response) => {
                         series: x.serie,
                         others: x.others,
                         condition: x.conservation_state,
+                        observations:x.observations,
                         moveId: x.id.toString()
                     })
                 })
