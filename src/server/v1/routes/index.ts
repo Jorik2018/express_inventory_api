@@ -333,6 +333,11 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
         // Aplicar límites de paginación utilizando los parámetros start y end
         response = response.slice(start, end);
 
+        res.status(200).json({
+            data: response,
+            count: count
+        });
+
     } catch (error) {
         console.log(error);
         res.status(502).send(error)
