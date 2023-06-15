@@ -308,19 +308,31 @@ router.get('/movement/:start/:end', validateToken, async (req: Request, res: Res
             } : {
                 contains: type
             }
-        };console.log(q);
+        };
+
+        // console.log(q);
+        // let response = await prisma.movement.findMany({
+        //     where: where,
+        //     skip: start,
+        //     take: end
+        // })
+        // let count = await prisma.movement.count({
+        //     where: where
+        // });
+        // res.status(200).json({
+        //     data: response,
+        //     count: count
+        // });
+
         let response = await prisma.movement.findMany({
-            where: where,
-            skip: start,
-            take: end
-        })
-        let count = await prisma.movement.count({
             where: where
         });
-        res.status(200).json({
-            data: response,
-            count: count
-        });
+
+        let count = response.length; // Obtener la cantidad de registros obtenidos
+
+        // Aplicar límites de paginación utilizando los parámetros start y end
+        response = response.slice(start, end);
+
     } catch (error) {
         console.log(error);
         res.status(502).send(error)
