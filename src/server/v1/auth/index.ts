@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 
 async function validateToken(req: Request, res: Response, next: NextFunction){
     req.body.user_id = `1`;
-   
+   if(1)return;
     
     if(req.headers.authorization!==undefined){
         

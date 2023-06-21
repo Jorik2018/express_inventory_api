@@ -211,13 +211,28 @@ router.get('/report', async (req: Request, res: Response) => {
             case "inventory":
                 template = "ficha_bienes"
                 data = await prisma.inventory.findMany()
-                data.map((x:any) => {
+                data.map((x:Inventory) => {
+
+                    const movementDetail = await prisma.movementDetail.findMany({
+                        include: {
+                            movement: true
+                          },
+                        take: 1,
+                        where: {
+                            
+                            register_code: x.patrimonial_code
+                        }
+                      });
+let movement:Movement;
+
+
                     newData.push({
                         codePatrimonial: x.patrimonial_code,
                         denomination: x.denomination,
                         num_lote: x.lot,
                         marca: x.brand,
                         model: x.model,
+                        n:movementDetail.length?movementDetail[0]:null,
                         color: x.color,
                         dimensions: x.dimensions,
                         series: x.serie,
