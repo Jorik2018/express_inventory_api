@@ -60,7 +60,7 @@ function getMonth(date: any) {
     return res;
 }
 
-router.get('/report', async (req: Request, res: Response) => {
+router.get('/report', validateToken, async (req: Request, res: Response) => {
     try {
         let type = req.query.type;
         let id = req.query.id
@@ -210,39 +210,39 @@ router.get('/report', async (req: Request, res: Response) => {
                 break;
             case "inventory":
                 template = "ficha_bienes"
-                data = await prisma.inventory.findMany()
-                data.map((x:Inventory) => {
-
-                    const movementDetail = await prisma.movementDetail.findMany({
-                        include: {
-                            movement: true
-                          },
-                        take: 1,
-                        where: {
-                            
-                            register_code: x.patrimonial_code
-                        }
-                      });
-let movement:Movement;
+                const movementDetail = await prisma.movementDetail.findMany({
+                    include: {
+                        movement: true,
+                        inventory:true
+                    },
+                    where:{
+                        is_delete:false
+                    }
+                });
+                movementDetail.forEach((md:MovementDetail & { movement: Movement; inventory?: Inventory })=>{
 
 
+
+                    let inventory:Inventory|undefined=md.inventory;
                     newData.push({
-                        codePatrimonial: x.patrimonial_code,
-                        denomination: x.denomination,
-                        num_lote: x.lot,
-                        marca: x.brand,
-                        model: x.model,
-                        n:movementDetail.length?movementDetail[0]:null,
-                        color: x.color,
-                        dimensions: x.dimensions,
-                        series: x.serie,
-                        others: x.others,
-                        condition: x.conservation_state,
-                        observations: x.observations,
-                        moveId: x.id.toString()
-                    })
-                })
-                console.log(newData)
+                        ... md.movement,
+                        ...
+                            inventory?{
+                                codePatrimonial: inventory.patrimonial_code,
+                                denomination: inventory.denomination,
+                                num_lote: inventory.lot,
+                                marca: inventory.brand,
+                                model: inventory.model,
+                                color: inventory.color,
+                                dimensions: inventory.dimensions,
+                                series: inventory.serie,
+                                others: inventory.others,
+                                condition: inventory.conservation_state,
+                                observations: inventory.observations,
+                                moveId: inventory.id.toString(),
+                            }:{}
+                    });
+                });
                 break;
             default:
                 break;
@@ -261,6 +261,7 @@ let movement:Movement;
         form.append('extension', 'pdf')
         form.append('file', file, uniqueId + ".json")
         let response
+        console.log(newData);
         try {
             response = await axios.post('http://web.regionancash.gob.pe/api/jreport/', form, {
                 headers: {
@@ -485,17 +486,16 @@ router.post('/token', async (req: Request, res: Response) => {
     return;
 });
 
-router.post('/movement', validateToken, async (req: Request, res: Response) => {
+router.post('/movement', async (req: Request, res: Response) => {
     try {
         let data: Movement = req.body;
         data.unit_organic_destiny = data.unit_organic_destiny === undefined ? data.unit_organic : data.unit_organic_destiny
         data.local_destiny = data.local_destiny === undefined ? data.local : data.local_destiny
-        data.address_destiny = data.address_destiny === undefined ? data.address : data.address_destiny
-        data.user_id = req.body.user_id
+        console.log(data);
         let response = await prisma.movement.create({
             data: {
                 address: data.address,
-                address_destiny: data.address_destiny,
+                address_destiny: data.address_destiny || data.address,
                 auth_document: data.auth_document,
                 date: data.date,
                 destiny_user_email: data.destiny_user_email,
@@ -547,20 +547,16 @@ router.post('/details/in', validateToken, async (req: Request, res: Response) =>
         data.user_id = req.body.user_id
         data.patrimonial_code = data.patrimonial_code === "" ? "S/C" : data.patrimonial_code;
         let id: number = Number(req.body.id)
-      //No existe opcion editar
-      //ddebe ingresar {id:?,inventory:{}}
+        //No existe opcion editar
+        //ddebe ingresar {id:?,inventory:{}}
         let response = await prisma.inventory.create({
             data: data,
         });
-
         let response2 = await prisma.movementDetail.create({
             data: {
                 movement_id: id,
                 inventory_id: response.id,
                 user_id: req.body.user_id
-            },
-            include: {
-                inventory: true
             }
         })
         res.status(200).json(response2)
