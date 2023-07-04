@@ -4,5 +4,6 @@ node_modules
 dist
 prisma/dev.db
 prisma/schema-local.prisma
+prisma/schema-test.prisma
 push.bat
 package-lock.json
