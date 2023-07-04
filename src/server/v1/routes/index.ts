@@ -224,9 +224,6 @@ router.get('/report', validateToken, async (req: Request, res: Response) => {
                     }
                 });
                 movementDetail.forEach((md:MovementDetail & { movement: Movement; inventory?: Inventory })=>{
-
-
-
                     let inventory:Inventory|undefined=md.inventory;
                     newData.push({
                         ... md.movement,
