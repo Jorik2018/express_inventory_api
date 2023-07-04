@@ -60,6 +60,10 @@ function getMonth(date: any) {
     return res;
 }
 
+router.get('/test', (req, res) => {
+    res.json({ message: 'Hello, World!' });
+});
+
 router.get('/report', validateToken, async (req: Request, res: Response) => {
     try {
         let type = req.query.type;
