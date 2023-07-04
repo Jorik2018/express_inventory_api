@@ -3,4 +3,5 @@ node_modules
 .env
 dist
 prisma/dev.db
+prisma/schema-local.prisma
 push.bat
