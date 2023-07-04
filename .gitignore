@@ -5,3 +5,4 @@ dist
 prisma/dev.db
 prisma/schema-local.prisma
 push.bat
+package-lock.json
