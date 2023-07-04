@@ -404,7 +404,7 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
             where:where
         })
         res.status(200).json({
-            data: response.map((x:any) => {
+            data: response.map((x:Inventory & { details?: MovementDetail[] }) => {
                 let o:any={
                     id: x.id,
                     patrimonial_code: x.patrimonial_code,
@@ -423,8 +423,8 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
                     updated_at: x.updated_at,
                     is_delete: x.is_delete
                 };
-                if(x.details){
-                    let d:Movement=x.details[0].movement;
+                if(x.details&&x.details.length){
+                    let d:Movement=(x.details[0] as any).movement;
                     o={...o,
                         unit_organic:d.unit_organic_destiny,
                         local:d.local_destiny,
