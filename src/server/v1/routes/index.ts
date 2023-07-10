@@ -523,6 +523,44 @@ router.post('/movement', async (req: Request, res: Response) => {
     return;
 });
 
+router.put('/movement/:id', async (req: Request, res: Response) => {
+    try {
+        let movementId = req.params.id;
+        let data: Movement = req.body;
+        data.unit_organic_destiny = data.unit_organic_destiny === undefined ? data.unit_organic : data.unit_organic_destiny
+        data.local_destiny = data.local_destiny === undefined ? data.local : data.local_destiny
+        console.log(data);
+        let response = await prisma.movement.update({
+            where: { id: movementId },
+            data: {
+                address: data.address,
+                address_destiny: data.address_destiny || data.address,
+                auth_document: data.auth_document,
+                date: data.date,
+                destiny_user_email: data.destiny_user_email,
+                destiny_user_name: data.destiny_user_name,
+                destiny_user_document: data.destiny_user_document,
+                local: data.local,
+                local_destiny: data.local_destiny,
+                reason: data.reason,
+                responsible_user_email: data.responsible_user_email,
+                responsible_user_name: data.responsible_user_name,
+                responsible_user_document: data.responsible_user_document,
+                register_code: data.register_code,
+                type: data.type,
+                unit_organic: data.unit_organic,
+                unit_organic_destiny: data.unit_organic_destiny,
+                user_id: data.user_id,
+            }
+        });
+        res.status(200).send(response);
+    } catch (error) {
+        console.error(error);
+        res.status(502).send(error);
+    }
+    return;
+});
+
 router.delete('/detail/:id', validateToken, async (req: Request, res: Response) => {
     try {
         let id: number = Number(req.params.id);
