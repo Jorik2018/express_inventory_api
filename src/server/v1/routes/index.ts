@@ -556,7 +556,6 @@ router.put('/movement/:id', validateToken, async (req: Request, res: Response) =
                 responsible_user_name: data.responsible_user_name,
                 responsible_user_document: data.responsible_user_document,
                 register_code: data.register_code,
-                type: data.type,
                 unit_organic: data.unit_organic,
                 unit_organic_destiny: data.unit_organic_destiny,
                 user_id: data.user_id,
