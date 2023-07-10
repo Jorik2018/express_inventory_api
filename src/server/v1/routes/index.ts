@@ -668,6 +668,27 @@ router.post('/details/traslate', validateToken, async (req: Request, res: Respon
     return;
 });
 
+router.put('/details/translate/:id', validateToken, async (req: Request, res: Response) => {
+    try {
+        let movementDetailId: number = Number(req.params.id);
+        let data: MovementDetail = req.body;
+
+        let response = await prisma.movementDetail.update({
+            where: { id: movementDetailId },
+            data: {
+                movement_id: data.movement_id,
+                inventory_id: data.inventory_id,
+                user_id: req.body.user_id
+            }
+        });
+
+        res.status(200).json(response);
+    } catch (error) {
+        console.log(error);
+        res.status(502).send(error);
+    }
+});
+
 export {
     router
 }
