@@ -443,7 +443,7 @@ router.get('/inventory/:start/:end', validateToken, async (req: Request, res: Re
     return;
 });
 
-router.get('/movement/:id', async (req: Request, res: Response) => {
+router.get('/movement/:id', validateToken, async (req: Request, res: Response) => {
     try {
         let id: number = Number(req.params.id);
         let response = await prisma.movement.findUnique({
@@ -487,7 +487,7 @@ router.post('/token', async (req: Request, res: Response) => {
     return;
 });
 
-router.post('/movement', async (req: Request, res: Response) => {
+router.post('/movement', validateToken, async (req: Request, res: Response) => {
     try {
         let data: Movement = req.body;
         data.unit_organic_destiny = data.unit_organic_destiny === undefined ? data.unit_organic : data.unit_organic_destiny
@@ -523,7 +523,7 @@ router.post('/movement', async (req: Request, res: Response) => {
     return;
 });
 
-router.put('/movement/:id', async (req: Request, res: Response) => {
+router.put('/movement/:id', validateToken, async (req: Request, res: Response) => {
     try {
         let movementId: number = parseInt(req.params.id);
         let data: Movement = req.body;
@@ -605,6 +605,49 @@ router.post('/details/in', validateToken, async (req: Request, res: Response) =>
         res.status(502).send(error)
     }
     return;
+});
+
+router.put('/details/in/:id', validateToken, async (req: Request, res: Response) => {
+    try {
+        let inventoryId: number = Number(req.params.id);
+        let data: Inventory = req.body.data;
+        data.user_id = req.body.user_id;
+        data.patrimonial_code = data.patrimonial_code === "" ? "S/C" : data.patrimonial_code;
+
+        let response = await prisma.inventory.update({
+            where: { id: inventoryId },
+            data: data,
+        });
+
+        let response2 = await prisma.movementDetail.findFirst({
+            where: {
+                movement_id: inventoryId,
+                inventory_id: response.id
+            }
+        });
+
+        if (response2) {
+            response2 = await prisma.movementDetail.update({
+                where: { id: response2.id },
+                data: {
+                    user_id: req.body.user_id
+                }
+            });
+        } else {
+            response2 = await prisma.movementDetail.create({
+                data: {
+                    movement_id: inventoryId,
+                    inventory_id: response.id,
+                    user_id: req.body.user_id
+                }
+            });
+        }
+
+        res.status(200).json(response2);
+    } catch (error) {
+        console.error(error);
+        res.status(502).send(error);
+    }
 });
 
 router.post('/details/traslate', validateToken, async (req: Request, res: Response) => {
