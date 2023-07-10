@@ -451,6 +451,9 @@ router.get('/movement/:id', validateToken, async (req: Request, res: Response) =
                 details: {
                     include: {
                         inventory: true
+                    },
+                    where: {
+                        is_delete: 0
                     }
                 }
             },
