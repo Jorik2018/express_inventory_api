@@ -453,7 +453,7 @@ router.get('/movement/:id', validateToken, async (req: Request, res: Response) =
                         inventory: true
                     },
                     where: {
-                        is_delete: 0
+                        is_delete: false
                     }
                 }
             },
