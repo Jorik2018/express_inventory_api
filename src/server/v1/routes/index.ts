@@ -525,7 +525,7 @@ router.post('/movement', async (req: Request, res: Response) => {
 
 router.put('/movement/:id', async (req: Request, res: Response) => {
     try {
-        let movementId = req.params.id;
+        let movementId: number = parseInt(req.params.id);
         let data: Movement = req.body;
         data.unit_organic_destiny = data.unit_organic_destiny === undefined ? data.unit_organic : data.unit_organic_destiny
         data.local_destiny = data.local_destiny === undefined ? data.local : data.local_destiny
