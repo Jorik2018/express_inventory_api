@@ -80,6 +80,9 @@ router.get('/report', validateToken, async (req: Request, res: Response) => {
                         details: {
                             include: {
                                 inventory: true
+                            },
+                            where: {
+                                is_delete: false
                             }
                         },
                     },
@@ -147,6 +150,9 @@ router.get('/report', validateToken, async (req: Request, res: Response) => {
                         details: {
                             include: {
                                 inventory: true
+                            },
+                            where: {
+                                is_delete: false
                             }
                         },
                     },
