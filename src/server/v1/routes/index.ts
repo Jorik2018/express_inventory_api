@@ -591,28 +591,38 @@ router.delete('/detail/:id', validateToken, async (req: Request, res: Response) 
 router.post('/details/in', validateToken, async (req: Request, res: Response) => {
     try {
         let data: Inventory = req.body.data;
-        data.user_id = req.body.user_id
+        data.user_id = req.body.user_id;
         data.patrimonial_code = data.patrimonial_code === "" ? "S/C" : data.patrimonial_code;
-        let id: number = Number(req.body.id)
-        //No existe opcion editar
-        //ddebe ingresar {id:?,inventory:{}}
+        let id: number = Number(req.body.id);
+
+        // Verifica si ya existe un registro con el mismo patrimonial_code
+        const existingInventory = await prisma.inventory.findUnique({
+            where: { patrimonial_code: data.patrimonial_code },
+        });
+
+        if (existingInventory) {
+            // El patrimonial_code ya existe, lanza un error
+            return res.status(400).json({ error: 'El patrimonial_code ya está registrado.' });
+        }
+
+        // Si no existe, crea un nuevo registro
         let response = await prisma.inventory.create({
             data: data,
         });
+
         let response2 = await prisma.movementDetail.create({
             data: {
                 movement_id: id,
                 inventory_id: response.id,
                 user_id: req.body.user_id
             }
-        })
-        res.status(200).json(response2)
+        });
+
+        res.status(200).json(response2);
     } catch (error) {
         console.error(error);
-        console.log(error);
-        res.status(502).send(error)
+        res.status(502).send(error);
     }
-    return;
 });
 
 router.put('/details/in/:id', validateToken, async (req: Request, res: Response) => {
