@@ -680,14 +680,9 @@ router.post(
       let data: Inventory = req.body.data;
       data.user_id = req.body.user_id;
 
-      // Verifica si ya existe un registro con el mismo patrimonial_code o el valor por defecto "S/C"
+      // Verifica si ya existe un registro con el mismo patrimonial_code
       const existingInventory = await prisma.inventory.findFirst({
-        where: {
-          OR: [
-            { patrimonial_code: data.patrimonial_code },
-            { patrimonial_code: "S/C" },
-          ],
-        },
+        where: { patrimonial_code: data.patrimonial_code },
       });
 
       if (existingInventory) {
